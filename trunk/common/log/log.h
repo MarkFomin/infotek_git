@@ -1,37 +1,27 @@
-#ifndef __LOG_H__
-#define __LOG_H__
+#ifndef LOG_H
+#define LOG_H
 
-/*
- * При разработке классов следует придерживаться принятого формата имен:
- * 
- * local  - локальные переменные в методах или функциях
- * input_ - передаваемые параметры в методы класса
- * prop__ - свойства класса
- * 
- * Пример:
- * 
- * class A {
- * 
- *  private:
- *    int a__; //свойство класса A
- *    
- *    //методод класса A с входным параметром d_
- *    void func(int d_){
- *      int b; //локальная переменная
- *      b=d_;
- *      
- *    }
- * };
- * 
- */
+#include <time.h>
 
-class Log {
-  
-public: 
-  
+
+class log
+{
+
 private:
-  
-  
+
+    char* file_;
+    char* file_prefix_;
+    unsigned int max_size_;
+    bool close_;
+    FILE* file_ptr_;
+
+public:
+
+
+
+    log(unsigned int n = 0, bool c = true, char* f = NULL, char* fp = NULL);
+    ~log();
+    //void write_log(char* message);
 };
 
-#endif
+#endif // LOG_H
