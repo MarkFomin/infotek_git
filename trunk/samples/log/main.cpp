@@ -4,6 +4,12 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
+
+    printf("Start Log sample.\n");
+    log a(0, true, "file.txt");
+
+    a.write("msg test");
+
+
     return 0;
 }
