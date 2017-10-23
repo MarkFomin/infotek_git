@@ -7,11 +7,11 @@ int main()
 {
 
     printf("Start Log sample.\n");
-    log a(250   , true, "file");
+    log a(2500   , true, "file5");
 
     for(int i=0; i<20; i++)
     {
-        char trap[20]="abcdefghijklmnopqrs";
+      char trap[1024]="abcdefghijklmnopqrsabcdefghijklmnopqrsabcdefghijklmnopqrsabcdefghijklmnopqrsabcdefghijklmnopqrsabcdefghijklmnopqrsabcdefghijklmnopqrs";
         trap[18] = char(i+48);
         a.write(trap);
     }

@@ -11,15 +11,15 @@ class log
 private:
 
     char file_name_[256]={0};
-    char* file_;
-    char* file_prefix_;
+    char const * file__;
+    char const * file_prefix_;
     unsigned int max_size_;
     bool close_;
     FILE* file_ptr_;
 
 public:
     //Конструктор
-    log(unsigned int n = 0, bool c = true, char* f = NULL, char* fp = nullptr);
+    log(unsigned int n_ = 0, bool c_ = true, char const * f_ = NULL, char const * fp_ = nullptr);
     //Деструктор
     ~log();
     //запись лога

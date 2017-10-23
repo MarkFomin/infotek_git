@@ -2,16 +2,16 @@
 
 using namespace std;
 
-log::log(unsigned int n, bool c, char *f, char *fp)
+log::log(unsigned int n_, bool c_, char const *f_, char const *fp_) : file__(f_)
 {
-    file_ = f;
-    file_prefix_ = fp;
-    max_size_ = n;
-    close_ = c;
+  
+    file_prefix_ = fp_;
+    max_size_ = n_;
+    close_ = c_;
     name_create();
 
-    file_ptr_ = fopen(file_name_, "a+");
-
+    file_ptr_ = fopen(file_name_, "a");
+    if(file_ptr_==nullptr)return;
     if (file_length() + 149 >= max_size_)
     {
         fclose(file_ptr_);
@@ -80,7 +80,6 @@ void log::write(char* msg)
 size_t log::file_length()
 {
     int f_l = 0;
-
     fseek(file_ptr_, 0, SEEK_END);
 
     f_l = ftell(file_ptr_);
@@ -128,7 +127,8 @@ void log::name_create()
         strcpy(file_name_, file_prefix_);
     }
 
-    strcat(file_name_, file_);
+    strcat(file_name_, file__);
+    printf("%s\n", file_name_);
 }
 
 void log::log_create(char* buf_log, char* buf_msg)
