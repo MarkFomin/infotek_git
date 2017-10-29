@@ -10,36 +10,40 @@ class log
 
 private:
 
-    char file_name_[256]={0};
-    char const * file__;
-    char const * file_prefix_;
-    unsigned int max_size_;
-    bool close_;
-    FILE* file_ptr_;
+    char file_name__[256]={0};
+    char* file__;
+    char* file_prefix__;
+    unsigned int max_size__;
+    bool close__;
+    FILE* file_ptr__;
 
-public:
-    //Конструктор
-    log(unsigned int n_ = 0, bool c_ = true, char const * f_ = NULL, char const * fp_ = nullptr);
-    //Деструктор
-    ~log();
-    //запись лога
-    void write(char* msg);
+
     //размер файла
     size_t file_length();
     //метод получения системного времени
-    char* get_time(char* buf);
+    char* get_time(char *buf_);
     //метд получения микросекунд
-    char* get_usec(char* buf);
+    char* get_usec(char *buf_);
     //метод обрезки сообщения, если оно превышает 128 символов
-    void cut_msg(char* buf, char* buf_msg);
+    void cut_msg(char const *buf_, char *buf_msg_);
     //формирование имени файла
     void name_create();
     //формирование сообщения для записи
-    void log_create(char* buf_log, char* buf_msg);
+    void log_create(char *buf_log_, char const *buf_msg_);
     //очистить файл
     void file_clear();
     //переименование file в file~
     void file_rename();
+public:
+
+    //Конструктор
+    log(unsigned int n = 0, bool c = true, char *f = NULL, char *fp = nullptr);
+    //Деструктор
+    ~log();
+    //запись лога
+    void write(char const *msg_);
+    //запись в лог содержимого произвольного буфера
+    //void writeb(void const* buf_, size_t len_, char const *info_);
 
 };
 
