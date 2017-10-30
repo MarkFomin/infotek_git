@@ -2,12 +2,12 @@
 
 using namespace std;
 
-log::log(unsigned int n, bool c, char *f, char *fp)
+log::log(unsigned int n_, bool c_, char const *f_, char const *fp_)
 {
-    file__ = f;
-    file_prefix__ = fp;
-    max_size__ = n;
-    close__ = c;
+    file__ = f_;
+    file_prefix__ = fp_;
+    max_size__ = n_;
+    close__ = c_;
     name_create();
 
     file_ptr__ = fopen(file_name__, "a+");
