@@ -8,7 +8,7 @@
 class log
 {
 
-private:
+public:
 
     char file_name__[256]={0};
     char const * file__;
@@ -22,7 +22,7 @@ private:
     size_t file_length();
     //метод получения системного времени
     char* get_time(char *buf_);
-    //метд получения микросекунд
+    //метод получения микросекунд
     char* get_usec(char *buf_);
     //метод обрезки сообщения, если оно превышает 128 символов
     void cut_msg(char const *buf_, char *buf_msg_);
@@ -34,6 +34,12 @@ private:
     void file_clear();
     //переименование file в file~
     void file_rename();
+    //создание строки
+    void logb_msg(void const* buf_, size_t len_, char const *info_, char *buf_msg_);
+
+
+
+
 public:
 
     //Конструктор
@@ -43,7 +49,7 @@ public:
     //запись лога
     void write(char const *msg_);
     //запись в лог содержимого произвольного буфера
-    //void writeb(void const* buf_, size_t len_, char const *info_);
+    void writeb(void const* buf_, size_t len_, char const *info_);
 
 };
 

@@ -139,11 +139,7 @@ char* log::get_usec(char *buf)
 }
 
 
-void log::cut_msg(const char *buf, char *buf_msg)
-{
-    strncpy(buf_msg, buf, 124);
-    strcat(buf_msg, "...");
-}
+
 
 void log::name_create()
 {
@@ -188,11 +184,18 @@ void log::file_rename()
     file_clear();
 }
 
-/*
+
+void log::cut_msg(const char *buf, char *buf_msg)
+{
+    strncpy(buf_msg, buf, 124);
+    strcat(buf_msg, "...");
+}
+
 void log::writeb(void const* buf_, size_t len_, char const *info_)
 {
-    char buffer_time[80];
-    char buffer_usec[80];
+    char buf_msg[256]={0};
+    char buffer_log[256]={0};;
+    size_t msg_len = 0;
 
     if(file_ptr__)
     {
@@ -207,31 +210,73 @@ void log::writeb(void const* buf_, size_t len_, char const *info_)
         return;
     }
 
-    get_time(buffer_time);
-    get_usec(buffer_usec);
+    logb_msg(buf_, len_, info_, buf_msg);
 
-    for(int i = 0; i < 5; i++)
-   {
-        //const char* tmp = (const char*)buf_;
-        //const char* tmp2 = (const char*)buf_;
-        size_t n = len_;
-        size_t n2 = sizeof(buf_);
-        fwrite(buf_, len_, 1, file_ptr__);
+    log_create(buffer_log, buf_msg);
 
+    msg_len = strlen(buffer_log);
 
-    //printf("%x", tmp);
+    if (msg_len+file_length() > max_size__)
+    {
+        fclose(file_ptr__);
+        file_rename();
+        file_ptr__ = fopen(file_name__, "a+");
 
+        if(!file_ptr__)
+        {
+            printf("ERROR! File wasn't opened!");
+            return;
+        }
+        fseek(file_ptr__, 0, SEEK_END);
+        fprintf(file_ptr__, buffer_log);
+    }
+    else
+    {
+        fseek(file_ptr__, 0, SEEK_END);
+        fprintf(file_ptr__, buffer_log);
+    }
+
+    if (!close__)
+    {
+        fclose(file_ptr__);
     }
 
 }
-*/
 
 
+void log::logb_msg(void const* buf_, size_t len_, char const *info_, char *buf_msg_)
+{
 
+    unsigned char const *p = (unsigned char const *)buf_;
 
+    if(strlen(info_) <= 128)
+    {
+        strcpy(buf_msg_, info_);
+    }
+    else
+    {
+        char tmp_buf[128];
+        cut_msg(info_, tmp_buf);
+        strcpy(buf_msg_, tmp_buf);
+        return;
+    }
 
+    for(unsigned int i = 0; (i < len_) && (strlen(buf_msg_)) <= 126; i++)
+    {
+        char tmp_c[4];
+        sprintf(tmp_c, " %02x", p[i]);
+        strcat(buf_msg_, tmp_c);
+    }
 
+    if (strlen(buf_msg_) > 128)
+    {
+        char tmp_buf[256];
+        memcpy(tmp_buf, buf_msg_, 256);
+        cut_msg(buf_msg_, tmp_buf);
+        memcpy(buf_msg_, tmp_buf, 256);
+    }
 
+}
 
 
 
