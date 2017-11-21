@@ -38,7 +38,6 @@ int ConfigSection::open_file()
             return -1;
         }
 
-
         return 0;
 }
 
@@ -78,7 +77,6 @@ int ConfigSection::find_section()
 
     if(open_file() == -1)
     {
-        printf("file not found");
         return -1;
     }
 
@@ -118,7 +116,10 @@ int ConfigSection::get_namesec(char *cur_str_, char *sec_name_str_)
 int ConfigSection::get_namevalue(char *cur_str_, char *val_name_str_)
 {
     int i = 0;
-
+    if ((strchr(cur_str_, LEFTBRACKET) != NULL) && (strchr(cur_str_, RIGHTBRACKET) != NULL))
+    {
+        return -2;
+    }
     return copy_str(cur_str_, val_name_str_, i);
 }
 
@@ -139,7 +140,7 @@ int ConfigSection::u(char const *name_, int default_)
 
     int f = 0;
 
-    if (find_section() == 0)
+    if (find_section() == -1)
     {
         return default_;
     }
@@ -149,6 +150,10 @@ int ConfigSection::u(char const *name_, int default_)
 
         f = get_namevalue(tmp_buf, tmp_name_value);
 
+        if (f == -2)
+        {
+            return default_;
+        }
         if (strcmp(tmp_name_value, name_) != 0)
         {
             continue;
@@ -174,7 +179,7 @@ char const *ConfigSection::u(char const *name_, char const *default_, char *str_
 
     int f = 0;
 
-    if (find_section() == 0)
+    if (find_section() == -1)
     {
         return default_;
     }
@@ -183,6 +188,11 @@ char const *ConfigSection::u(char const *name_, char const *default_, char *str_
     {
 
         f = get_namevalue(tmp_buf, tmp_name_value);
+
+        if (f == -2)
+        {
+            return default_;
+        }
 
         if (strcmp(tmp_name_value, name_) != 0)
         {
