@@ -1,10 +1,18 @@
 #Тестовый файл конфигурации
 [global]
 #глобальные параметры
-ip     = "192.168.0.1"
-port = 3270
+ip     = 192.168.0.1
+port   = 3270
 
 [local]
 #локальные параметры
-timeout = 300
-log         = "~file" 
+ip      = 127.0.0.1
+port    = 3270
+timeout = 400
+log     = log~
+
+[other]
+ip      = 0.0.0.0
+port    = 1111
+timeout = 222
+log     = other_log
