@@ -6,6 +6,12 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <sys/time.h>
+
 #include <string>
 #include <map>
 
@@ -18,7 +24,7 @@ public:
 private:
   
   int socket__; //!< сокет сервера
-  
+  Id id__;
   //!Структура для хранения информации о клиенте
   struct SocketInfo {
     int socket;          //!< Сокет клиента
@@ -29,17 +35,21 @@ private:
     size_t   send_len;            //!< Размер буфера для отправки
     SocketInfo(int socket_, std::string const &ip_, unsigned short port_):socket(socket_), ip(ip_), port(port_), send_len(0) {}
   };
+
+
   std::map<Id, SocketInfo> sockets__; //!< Список сокетов клиентов
   
 public:
   
-  TCPServer() {};
+  TCPServer() {
+      id__ = 0;
+  }
   ~TCPServer(){
     //Закрыть сокеты, как свой так и клиентов close()
-  };
+  }
   
   // Инициализация серверного сокета
-  bool tcp_server__init(char const *sv_host_, unsigned short sv_port_) {
+  bool tcp_server__init(char const *sv_host_, unsigned short sv_port_);// {
 
     //1. Открытие сокета socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)
     
@@ -47,11 +57,11 @@ public:
     
     //3. Привязваем сокет к локальной конечной точке ip:port, bind(...)
     
-    return true;
-  }
+    //return true;
+  //}
   
   // Проверить события на сокете (осуществляется функцией FD_ISSET)
-  void tcp_server__socket_check (fd_set const &rd_, fd_set const &wr_){
+  void tcp_server__socket_check (fd_set const &rd_, fd_set const &wr_);//{
     //1. Проверить чтение на своем сокете, возможно кто то хочет подключиться
     
     //1.1 Если действительно кто то подключается тогда делаем accept(...)
@@ -71,10 +81,10 @@ public:
     //2.3 Если чтение успешное то вызываем абстрактный метод tcp_server__recv(), и передаем в него что смогли прочитать
     
     //3.1 Проверяем возможность записи на клиентский сокет, отпправляем данные если что то уже есть в буфере
-  }
+  //}
   
   // Добавить сокеты "на прослушку" (осуществляется функцией FD_SET)
-  void tcp_server__socket_add(fd_set &rd_, fd_set &wr_, int &n_) {
+  void tcp_server__socket_add(fd_set &rd_, fd_set &wr_, int &n_);// {
     //1. Добавляем на чтение свой сокет, чтобы смогли подключится клиенты
     
     //2. Для всех клиентов выставляем так же, что готовы читать данные
@@ -84,14 +94,14 @@ public:
     //4. Следим чтобы значение как сокет сервера так и клиентов не привышало значение дискриптора в n_,
     //   Делаем n_=sock+1, если это произошло (нужно для селекта в основном потоке)
     
-  }
+  //}
   
   // Отправка даннных клиенту
-  void tcp_server__send(TCPServer::Id id_, unsigned char const *v_, size_t &send_){
+  void tcp_server__send(TCPServer::Id id_, unsigned char const *v_, size_t &send_);//{
     //1. Ищем клиента в списке по id_
     
     //2. Добавляем данные на отправку для клиента в его буфер
-  }
+  //}
   
   // Оповещение о получении данных
   virtual void tcp_server__recv(Id, unsigned char const *, size_t) = 0;
