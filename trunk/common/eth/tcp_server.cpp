@@ -98,7 +98,6 @@ namespace eth {
 
                 tcp_server__connected(id__, (tmp_it->second).ip.c_str(), (tmp_it->second).port);
 
-                send(new_socket, "Hello", 6, 0);
             }
         }
 
