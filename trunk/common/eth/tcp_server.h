@@ -5,12 +5,13 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <sys/socket.h>
-
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <stdlib.h>
 
 #include <string>
 #include <map>
@@ -45,6 +46,12 @@ public:
       id__ = 0;
   }
   ~TCPServer(){
+      for(std::map<Id, SocketInfo>::iterator it = sockets__.begin(); it != sockets__.end();)
+      {
+          close((it->second).socket);
+          sockets__.erase(it);
+      }
+      close(socket__);
     //Закрыть сокеты, как свой так и клиентов close()
   }
   

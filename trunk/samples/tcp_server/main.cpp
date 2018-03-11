@@ -114,7 +114,7 @@ int main(){
         
       case 0:
         break;
-        
+
       default:
         
         tcp_serv.socket_check(fds_rd, fds_wr);
