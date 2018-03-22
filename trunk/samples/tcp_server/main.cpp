@@ -51,6 +51,8 @@ private:
     //Для теста отправим то что пришло от клиета обратно...
     
     send(id_, buf_, len_);
+
+
   };
   
   // Оповещение о наличии соединения
@@ -87,7 +89,9 @@ int main(){
   timeval tv;
   int     n;
   int     retcode = 0;
-  
+  //ConfigSection config_sect(file_conf, "local");
+
+
   while (work) {
     
     FD_ZERO(&fds_rd);

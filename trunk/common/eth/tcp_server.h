@@ -1,6 +1,9 @@
 #ifndef __ETH_TCP_SERVER__H__
 #define __ETH_TCP_SERVER__H__
 
+#include "../configsection/configsection.h"
+#include "../log/log.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -16,14 +19,23 @@
 #include <string>
 #include <map>
 
+#define MAX_TCP_SERVER_BUF_SIZE 1024
+#define MAX_LOG_SIZE 65535
+
 namespace eth {
 
 class TCPServer {
   
 public:
   typedef unsigned long Id; //!< Идентификатор клиента (автоикримент при добавлении)
+
+
 private:
-  
+
+  log *log_file;
+  log *log_file_b;
+
+
   int socket__; //!< сокет сервера
   Id id__;
   //!Структура для хранения информации о клиенте
@@ -32,7 +44,7 @@ private:
     std::string ip;      //!< IP клиента
     unsigned short port; //!< Порт клиента
     
-    unsigned char send_buf[1024]; //!< Буфер для отправки
+    unsigned char send_buf[MAX_TCP_SERVER_BUF_SIZE]; //!< Буфер для отправки
     size_t   send_len;            //!< Размер буфера для отправки
     SocketInfo(int socket_, std::string const &ip_, unsigned short port_):socket(socket_), ip(ip_), port(port_), send_len(0) {}
   };
@@ -41,17 +53,30 @@ private:
   std::map<Id, SocketInfo> sockets__; //!< Список сокетов клиентов
   
 public:
+
+
   
   TCPServer() {
-      id__ = 0;
+
+    log_file = new log(65535, true, "server_log_file","/home/roman/git_prog/infotek_git/trunk/samples/");
+    log_file_b = new log(65535, true, "server_log_binary_file","/home/roman/git_prog/infotek_git/trunk/samples/");
+
+    id__ = 0;
   }
   ~TCPServer(){
-      for(std::map<Id, SocketInfo>::iterator it = sockets__.begin(); it != sockets__.end();)
+      for(std::map<Id, SocketInfo>::iterator tmp_it, it = sockets__.begin(); it != sockets__.end(); it=tmp_it)
       {
+          tmp_it = it;
+          ++tmp_it;
+
           close((it->second).socket);
           sockets__.erase(it);
       }
+
+      delete log_file;
+      delete log_file_b;
       close(socket__);
+
     //Закрыть сокеты, как свой так и клиентов close()
   }
   

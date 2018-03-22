@@ -7,11 +7,9 @@ namespace eth {
         sockaddr_in socket_sa;
 
         socket__ = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-        fcntl(socket__, F_SETFL, O_NONBLOCK);
 
         if (socket__ < 0)
         {
-            printf("Error");
             return false;
         }
 
@@ -20,6 +18,7 @@ namespace eth {
         socket_sa.sin_family = PF_INET;
         socket_sa.sin_port = htons(sv_port_);
         inet_pton(PF_INET, sv_host_, &(socket_sa.sin_addr));
+
 
 
         if (bind(socket__, (struct sockaddr *)(&socket_sa), sizeof(socket_sa)) == 0)
@@ -75,8 +74,9 @@ namespace eth {
         int new_socket = 0;
         int valread = 0;
         int socket_sa_len = 0;
+        char buf[MAX_TCP_SERVER_BUF_SIZE] = {'\0'};
 
-        unsigned char read_str_char[1024] = {'\0'};
+        unsigned char read_str_char[MAX_TCP_SERVER_BUF_SIZE] = {'\0'};
         std::string read_str;
         std::string ip_str;
 
@@ -98,31 +98,48 @@ namespace eth {
 
                 tcp_server__connected(id__, (tmp_it->second).ip.c_str(), (tmp_it->second).port);
 
+                sprintf(buf, "client %u connected", id__);
+
+                log_file->write(buf);
+                log_file_b->writeb("", 0, buf);
+
             }
         }
 
-        for(std::map<Id, SocketInfo>::iterator it = sockets__.begin(); it != sockets__.end(); it++)
+        for(std::map<Id, SocketInfo>::iterator tmp_it, it = sockets__.begin(); it != sockets__.end(); it=tmp_it)
         {
-            //std::map<Id, SocketInfo>::iterator it_tmp = it;
+            tmp_it = it;
+            ++tmp_it;
 
             if (FD_ISSET((it->second).socket, &rd_))
             {
 
-                if (((valread = read((it->second).socket, read_str_char, 1024)) <= 0))
+                if (((valread = read((it->second).socket, read_str_char, MAX_TCP_SERVER_BUF_SIZE)) <= 0))
                 {
                     tcp_server__disconnected((it->first));
                     close((it->second).socket);
                     sockets__.erase(it);
+
+                    sprintf(buf, "client %u disconnected", id__);
+
+                    log_file->write(buf);
+                    log_file_b->writeb("", 0, buf);
                 }
                 else
                 {
-                    tcp_server__recv((it->first), read_str_char, 1024);
-                    it++;
+                    tcp_server__recv((it->first), read_str_char, MAX_TCP_SERVER_BUF_SIZE);
+
+                    sprintf(buf , "read from %u: %s", id__, read_str_char);
+
+                    log_file->write(buf);
+
+                    sprintf(buf , "read from %u: ", id__);
+
+                    log_file_b->writeb(read_str_char, valread, buf);
+
                 }
             }
 
-            if(it == sockets__.end())
-                break;
         }
 
         for(std::map<Id, SocketInfo>::iterator it = sockets__.begin(); it != sockets__.end(); it++)
@@ -133,6 +150,15 @@ namespace eth {
                 {
                     send((it->second).socket, (it->second).send_buf, (it->second).send_len, 0);
                     (it->second).send_len = 0;
+
+                    sprintf(buf , "send to %u: %s", id__, read_str_char);
+
+                    log_file->write(buf);
+
+                    sprintf(buf , "send to %u: ", id__);
+
+                    log_file_b->writeb(read_str_char, valread, buf);
+
                 }
 
             }
