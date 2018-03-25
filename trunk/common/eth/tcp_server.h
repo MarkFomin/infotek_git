@@ -4,6 +4,7 @@
 #include "../configsection/configsection.h"
 #include "../log/log.h"
 
+
 #include <string.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -19,8 +20,11 @@
 #include <string>
 #include <map>
 
+
 #define MAX_TCP_SERVER_BUF_SIZE 1024
 #define MAX_LOG_SIZE 65535
+#define DEFAULT_LOG_NAME "log.log"
+#define DEFAULT_BLOG_NAME "binary_log.log"
 
 namespace eth {
 
@@ -31,6 +35,8 @@ public:
 
 
 private:
+
+  ConfigSection *cfg_file;
 
   log *log_file;
   log *log_file_b;
@@ -51,15 +57,26 @@ private:
 
 
   std::map<Id, SocketInfo> sockets__; //!< Список сокетов клиентов
+
+
+  char const *cfg_file_name__;
+  char const * log_file_name__;
+  char const * log_bfile_name__;
   
 public:
+  ConfigSection *cfg_file__;
 
 
-  
-  TCPServer() {
+  TCPServer(char const *cfg_file_name_){
 
-    log_file = new log(65535, true, "server_log_file","/home/roman/git_prog/infotek_git/trunk/samples/");
-    log_file_b = new log(65535, true, "server_log_binary_file","/home/roman/git_prog/infotek_git/trunk/samples/");
+    char val[MAXLENVALUE];
+    cfg_file__ = new ConfigSection(cfg_file_name_, "local");
+
+    log_file_name__ = cfg_file__->u("log", DEFAULT_LOG_NAME, val);
+    log_bfile_name__ = cfg_file__->u("binary", DEFAULT_BLOG_NAME, val);
+
+    log_file = new log(MAX_LOG_SIZE, true, log_file_name__);
+    log_file_b = new log(MAX_LOG_SIZE, true, log_bfile_name__);
 
     id__ = 0;
   }

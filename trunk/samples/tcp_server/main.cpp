@@ -7,6 +7,9 @@
 #include <map>
 
 #define DEFAULT_TEST_SERVER_TCP_PORT 5972
+#define DEFAULT_TEST_SERVER_TCP_IP "127.0.0.1"
+#define CONST_CFG_NAME "/home/roman/git_prog/infotek_git/trunk/samples/tcp_server/conf"
+
 
 bool work=true;
 
@@ -14,7 +17,16 @@ bool work=true;
 class TestServer: private eth::TCPServer {
   
 public:
-  TestServer(char const *sv_ip_, unsigned short sv_port_):srv_ip__(sv_ip_), srv_port__(sv_port_) {};
+
+  TestServer(char const *sv_ip_, unsigned short sv_port_, char const *cfg_file_name_): TCPServer(cfg_file_name_){
+      char val[MAXLENVALUE];
+
+      TCPServer::cfg_file__->update(cfg_file_name_, "global");
+
+      srv_ip__ = TCPServer::cfg_file__->u("ip", sv_ip_, val);
+      srv_port__ = TCPServer::cfg_file__->u("port", (int)sv_port_);
+  };
+
   ~TestServer(){};
   
   // Инициализация объекта
@@ -39,7 +51,14 @@ private:
   
   std::string    srv_ip__;
   unsigned short srv_port__;
-  
+  char const *cfg_file_name___;
+  /*
+  char const *cfg_file_name__;
+  ConfigSection *cfg_file__;
+
+  char const * log_file_name__;
+  char const * log_bfile_name__;
+    */
   // Получение данных
   virtual void tcp_server__recv(TCPServer::Id id_, unsigned char const *buf_, size_t len_){
     
@@ -73,11 +92,18 @@ private:
   
 };
 
-int main(){
-  
-  
-  TestServer tcp_serv("127.0.0.1", DEFAULT_TEST_SERVER_TCP_PORT);
-  
+int main(int argc, char *argv[]){
+
+  char a[MAXLENVALUE];
+
+  if (argc > 1)
+    strcpy(a, argv[1]);
+  else
+    strcpy(a, CONST_CFG_NAME);
+
+
+  TestServer tcp_serv(DEFAULT_TEST_SERVER_TCP_IP, DEFAULT_TEST_SERVER_TCP_PORT, a);
+
   if (tcp_serv.init()==false) {
     printf("TestServer init error\n");
     return 1;
@@ -89,7 +115,7 @@ int main(){
   timeval tv;
   int     n;
   int     retcode = 0;
-  //ConfigSection config_sect(file_conf, "local");
+
 
 
   while (work) {
