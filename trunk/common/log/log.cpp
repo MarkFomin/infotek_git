@@ -33,6 +33,11 @@ log::log(unsigned int n_, bool c_, char const *f_, char const *fp_)
             }
         }
     }
+
+    if(close__)
+    {
+        fclose(file_ptr__);
+    }
 }
 
 log::~log()
@@ -49,7 +54,7 @@ void log::write(const char *msg_)
     char buffer_msg[128]={0};
     size_t msg_len = 0;
 
-    if (!close__)
+    if (close__)
     {
         file_ptr__ = fopen(file_name__, "a+");
 
@@ -95,7 +100,7 @@ void log::write(const char *msg_)
         fprintf(file_ptr__, buffer_log);
     }
 
-    if (!close__)
+    if (close__)
     {
         fclose(file_ptr__);
     }
@@ -155,7 +160,25 @@ void log::log_create(char* buf_log, char const *buf_msg)
 {
     char buffer_time[80];
     char buffer_usec[80];
-    sprintf(buf_log, "%s %s %s\n", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
+    char buf_rn[2] = {'\0'};
+    char buf_cpy[2] = {'\0'};
+    unsigned int i = 0;
+
+    i = strlen(buf_msg);
+
+    buf_rn[0] = '\r';
+    buf_rn[1] = '\n';
+
+
+    buf_cpy[0] = buf_msg[i - 2];
+    buf_cpy[1] = buf_msg[i - 1];
+
+    if (memcmp(buf_cpy, buf_rn, 2) == 0)
+        sprintf(buf_log, "%s %s %s", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
+    else
+        sprintf(buf_log, "%s %s %s\r\n", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
+
+
 }
 
 void log::file_clear()
@@ -197,6 +220,21 @@ void log::writeb(void const* buf_, size_t len_, char const *info_)
     char buffer_log[256]={0};;
     size_t msg_len = 0;
 
+
+    if (close__)
+    {
+
+        file_ptr__ = fopen(file_name__, "a+");
+
+        if(!file_ptr__)
+        {
+            printf("ERROR! File wasn't opened!");
+            return;
+        }
+    }
+
+
+
     if(file_ptr__)
     {
         fclose(file_ptr__);
@@ -212,7 +250,7 @@ void log::writeb(void const* buf_, size_t len_, char const *info_)
 
     logb_msg(buf_, len_, info_, buf_msg);
 
-    log_create(buffer_log, buf_msg);
+    blog_create(buffer_log, buf_msg);
 
     msg_len = strlen(buffer_log);
 
@@ -236,7 +274,7 @@ void log::writeb(void const* buf_, size_t len_, char const *info_)
         fprintf(file_ptr__, buffer_log);
     }
 
-    if (!close__)
+    if (close__)
     {
         fclose(file_ptr__);
     }
@@ -278,6 +316,14 @@ void log::logb_msg(void const* buf_, size_t len_, char const *info_, char *buf_m
 
 }
 
+void log::blog_create(char* buf_log, char const *buf_msg)
+{
+    char buffer_time[80];
+    char buffer_usec[80];
+
+    sprintf(buf_log, "%s %s %s\r\n", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
+
+}
 
 
 

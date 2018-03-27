@@ -32,15 +32,13 @@ class TCPServer {
   
 public:
   typedef unsigned long Id; //!< Идентификатор клиента (автоикримент при добавлении)
+  log *log_file;
+  log *log_file_b;
 
 
 private:
 
   ConfigSection *cfg_file;
-
-  log *log_file;
-  log *log_file_b;
-
 
   int socket__; //!< сокет сервера
   Id id__;
@@ -60,8 +58,8 @@ private:
 
 
   char const *cfg_file_name__;
-  char const * log_file_name__;
-  char const * log_bfile_name__;
+  char const *log_file_name__;
+  char const *log_bfile_name__;
   
 public:
   ConfigSection *cfg_file__;
@@ -69,13 +67,14 @@ public:
 
   TCPServer(char const *cfg_file_name_){
 
-    char val[MAXLENVALUE];
+    char val_log[MAXLENVALUE];
+    char val_binary_log[MAXLENVALUE];
     cfg_file__ = new ConfigSection(cfg_file_name_, "local");
 
-    log_file_name__ = cfg_file__->u("log", DEFAULT_LOG_NAME, val);
-    log_bfile_name__ = cfg_file__->u("binary", DEFAULT_BLOG_NAME, val);
-
+    log_file_name__ = cfg_file__->u("log", DEFAULT_LOG_NAME, val_log);
     log_file = new log(MAX_LOG_SIZE, true, log_file_name__);
+
+    log_bfile_name__ = cfg_file__->u("binary_log", DEFAULT_BLOG_NAME, val_binary_log);
     log_file_b = new log(MAX_LOG_SIZE, true, log_bfile_name__);
 
     id__ = 0;
@@ -90,8 +89,9 @@ public:
           sockets__.erase(it);
       }
 
-      delete log_file;
-      delete log_file_b;
+      //delete cfg_file_name__;
+      //delete log_file_name__;
+      //delete log_bfile_name__;
       close(socket__);
 
     //Закрыть сокеты, как свой так и клиентов close()

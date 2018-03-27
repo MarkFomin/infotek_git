@@ -8,7 +8,7 @@
 
 #define DEFAULT_TEST_SERVER_TCP_PORT 5972
 #define DEFAULT_TEST_SERVER_TCP_IP "127.0.0.1"
-#define CONST_CFG_NAME "/home/roman/git_prog/infotek_git/trunk/samples/tcp_server/conf"
+#define CONST_CFG_NAME "server.cfg"
 
 
 bool work=true;
@@ -52,13 +52,7 @@ private:
   std::string    srv_ip__;
   unsigned short srv_port__;
   char const *cfg_file_name___;
-  /*
-  char const *cfg_file_name__;
-  ConfigSection *cfg_file__;
 
-  char const * log_file_name__;
-  char const * log_bfile_name__;
-    */
   // Получение данных
   virtual void tcp_server__recv(TCPServer::Id id_, unsigned char const *buf_, size_t len_){
     
@@ -78,16 +72,29 @@ private:
   virtual void tcp_server__connected(TCPServer::Id id_, char const *cl_ip_, unsigned short cl_port_){
     
     printf("tcp_server__connected(%zd) %s:%d\n", id_, cl_ip_, cl_port_);
-    
+
+    char buf[MAX_TCP_SERVER_BUF_SIZE] = {'\0'};
+
     std::string str = "Test TCP server:\n";
     size_t try_send = str.length();
     send(id_, (unsigned char const *)str.c_str(), try_send);
+
+    sprintf(buf, "Client %lu connected", id_);
+
+    log_file->write(buf);
+    log_file_b->writeb("", 0, buf);
   };
   
   // Оповещение о разрыве соединения
   virtual void tcp_server__disconnected(Id id_){
-    
+    char buf[MAX_TCP_SERVER_BUF_SIZE] = {'\0'};
+
     printf("tcp_server__disconnected(%zd)\n", id_);
+
+    sprintf(buf, "client %lu disconnected", id_);
+
+    log_file->write(buf);
+    log_file_b->writeb("", 0, buf);
   };
   
 };

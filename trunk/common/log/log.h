@@ -36,6 +36,8 @@ public:
     void file_rename();
     //создание строки
     void logb_msg(void const* buf_, size_t len_, char const *info_, char *buf_msg_);
+    //формирование сообщения для записи в бинарном виде
+    void blog_create(char* buf_log, char const *buf_msg);
 
 
 

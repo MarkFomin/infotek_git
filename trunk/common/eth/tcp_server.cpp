@@ -98,11 +98,6 @@ namespace eth {
 
                 tcp_server__connected(id__, (tmp_it->second).ip.c_str(), (tmp_it->second).port);
 
-                sprintf(buf, "client %lu connected", id__);
-
-                log_file->write(buf);
-                log_file_b->writeb("", 0, buf);
-
             }
         }
 
@@ -120,14 +115,10 @@ namespace eth {
                     close((it->second).socket);
                     sockets__.erase(it);
 
-                    sprintf(buf, "client %lu disconnected", id__);
-
-                    log_file->write(buf);
-                    log_file_b->writeb("", 0, buf);
                 }
                 else
                 {
-                    tcp_server__recv((it->first), read_str_char, MAX_TCP_SERVER_BUF_SIZE);
+                    tcp_server__recv((it->first), read_str_char, valread);
 
                     sprintf(buf , "read from %lu: %s", id__, read_str_char);
 
