@@ -93,12 +93,12 @@ void log::write(const char *msg_)
             return;
         }
         fseek(file_ptr__, 0, SEEK_END);
-        fprintf(file_ptr__, buffer_log);
+        fprintf(file_ptr__, "%s", buffer_log);
     }
     else
     {
         fseek(file_ptr__, 0, SEEK_END);
-        fprintf(file_ptr__, buffer_log);
+        fprintf(file_ptr__, "%s", buffer_log);
     }
 
     if (close__)
@@ -269,12 +269,12 @@ void log::writeb(void const* buf_, size_t len_, char const *info_)
             return;
         }
         fseek(file_ptr__, 0, SEEK_END);
-        fprintf(file_ptr__, buffer_log);
+        fprintf(file_ptr__, "%s", buffer_log);
     }
     else
     {
         fseek(file_ptr__, 0, SEEK_END);
-        fprintf(file_ptr__, buffer_log);
+        fprintf(file_ptr__, "%s", buffer_log);
     }
 
     if (close__)

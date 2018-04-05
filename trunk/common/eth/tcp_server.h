@@ -1,8 +1,8 @@
 #ifndef __ETH_TCP_SERVER__H__
 #define __ETH_TCP_SERVER__H__
 
-#include "configsection.h"
-#include "log.h"
+#include "../../common/configsection/configsection.h"
+#include "../../common/log/log.h"
 
 
 #include <string.h>

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <errno.h>
 
-#include "tcp_server.h"
+#include "../../common/eth/tcp_server.h"
 #include <string>
 #include <map>
 
