@@ -46,6 +46,7 @@ log::~log()
     {
         fclose(file_ptr__);
     }
+
 }
 
 void log::write(const char *msg_)
@@ -160,24 +161,26 @@ void log::log_create(char* buf_log, char const *buf_msg)
 {
     char buffer_time[80];
     char buffer_usec[80];
-    char buf_rn[2] = {'\0'};
+    char buf_rn[2] = {'\r', '\n'};
     char buf_cpy[2] = {'\0'};
     unsigned int i = 0;
 
     i = strlen(buf_msg);
 
-    buf_rn[0] = '\r';
-    buf_rn[1] = '\n';
+    if ( i >= 2)
+    {
 
+        buf_cpy[0] = buf_msg[i - 2];
+        buf_cpy[1] = buf_msg[i - 1];
 
-    buf_cpy[0] = buf_msg[i - 2];
-    buf_cpy[1] = buf_msg[i - 1];
+        if (memcmp(buf_cpy, buf_rn, 2) == 0)
+            sprintf(buf_log, "%s %s %s", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
+        else
+            sprintf(buf_log, "%s %s %s\r\n", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
 
-    if (memcmp(buf_cpy, buf_rn, 2) == 0)
-        sprintf(buf_log, "%s %s %s", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
+    }
     else
         sprintf(buf_log, "%s %s %s\r\n", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
-
 
 }
 
@@ -324,9 +327,3 @@ void log::blog_create(char* buf_log, char const *buf_msg)
     sprintf(buf_log, "%s %s %s\r\n", get_time(buffer_time), get_usec(buffer_usec), buf_msg);
 
 }
-
-
-
-
-
-

@@ -224,9 +224,3 @@ bool ConfigSection::isStop(char c)
         return false;
     }
 }
-
-
-
-
-
-

@@ -7,7 +7,7 @@ int main()
 {
 
     printf("Start Log sample.\n");
-    log a(65535 , true, "file", "");
+    log a(65535 , false, "file", "");
 
     for(int i=0; i<20; i++)
     {

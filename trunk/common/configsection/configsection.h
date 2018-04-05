@@ -18,7 +18,7 @@ private:
     char const *file__;
     char const *section__;
     FILE *file_ptr__;
-    
+
     //метод открытия файла
     int open_file();
     //метод чтения строки из файла

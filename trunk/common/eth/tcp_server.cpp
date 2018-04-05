@@ -2,6 +2,8 @@
 
 namespace eth {
 
+
+
     bool TCPServer::tcp_server__init(const char *sv_host_, unsigned short sv_port_) {
 
         sockaddr_in socket_sa;
@@ -19,9 +21,9 @@ namespace eth {
         socket_sa.sin_port = htons(sv_port_);
         inet_pton(PF_INET, sv_host_, &(socket_sa.sin_addr));
 
+        int f = bind(socket__, (struct sockaddr *)(&socket_sa), sizeof(socket_sa));
 
-
-        if (bind(socket__, (struct sockaddr *)(&socket_sa), sizeof(socket_sa)) == 0)
+        if (f == 0)
         {
             if (listen(socket__, 3) < 0)
             {
@@ -172,10 +174,3 @@ namespace eth {
 
 
 }
-
-
-
-
-
-
-
