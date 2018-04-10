@@ -42,7 +42,7 @@ log::log(unsigned int n_, bool c_, char const *f_, char const *fp_)
 
 log::~log()
 {
-    if(close__)
+    if(!close__)
     {
         fclose(file_ptr__);
     }

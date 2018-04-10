@@ -57,7 +57,7 @@ private:
 
 public:
 
-  TCPServer(char const *cfg_file_name_){
+  TCPServer(char const *cfg_file_name_):socket__(-1){
 
     char val_log[MAXLENVALUE] = {"\0"};
     char val_binary_log[MAXLENVALUE] = {"\0"};
@@ -89,7 +89,7 @@ public:
       delete cfg_file__;
       delete log_file;
       delete log_file_b;
-      close(socket__);
+      if( socket__!=-1 ) close(socket__);
 
   }
 
